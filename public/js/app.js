@@ -1845,6 +1845,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var vue_clickaway__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-clickaway */ "./node_modules/vue-clickaway/dist/vue-clickaway.common.js");
 //
 //
 //
@@ -1866,7 +1867,50 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: {
+    align: {
+      "default": 'left'
+    },
+    width: {
+      "default": '48'
+    }
+  },
+  mixins: [vue_clickaway__WEBPACK_IMPORTED_MODULE_0__.mixin],
+  data: function data() {
+    return {
+      showMenu: false
+    };
+  },
+  methods: {
+    hideMenu: function hideMenu() {
+      this.showMenu = false;
+    }
+  },
+  computed: {
+    classes: function classes() {
+      var alignmentClasses = this.align == 'left' ? 'left-0 origin-left' : 'right-0 origin-right';
+      var contentWidth = 'w-' + this.width;
+      return "".concat(alignmentClasses, " ").concat(contentWidth);
+    }
+  }
+});
 
 /***/ }),
 
@@ -2149,6 +2193,99 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
+/***/ "./node_modules/vue-clickaway/dist/vue-clickaway.common.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/vue-clickaway/dist/vue-clickaway.common.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+var Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+Vue = 'default' in Vue ? Vue['default'] : Vue;
+
+var version = '2.2.2';
+
+var compatible = (/^2\./).test(Vue.version);
+if (!compatible) {
+  Vue.util.warn('VueClickaway ' + version + ' only supports Vue 2.x, and does not support Vue ' + Vue.version);
+}
+
+
+
+// @SECTION: implementation
+
+var HANDLER = '_vue_clickaway_handler';
+
+function bind(el, binding, vnode) {
+  unbind(el);
+
+  var vm = vnode.context;
+
+  var callback = binding.value;
+  if (typeof callback !== 'function') {
+    if (true) {
+      Vue.util.warn(
+        'v-' + binding.name + '="' +
+        binding.expression + '" expects a function value, ' +
+        'got ' + callback
+      );
+    }
+    return;
+  }
+
+  // @NOTE: Vue binds directives in microtasks, while UI events are dispatched
+  //        in macrotasks. This causes the listener to be set up before
+  //        the "origin" click event (the event that lead to the binding of
+  //        the directive) arrives at the document root. To work around that,
+  //        we ignore events until the end of the "initial" macrotask.
+  // @REFERENCE: https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
+  // @REFERENCE: https://github.com/simplesmiler/vue-clickaway/issues/8
+  var initialMacrotaskEnded = false;
+  setTimeout(function() {
+    initialMacrotaskEnded = true;
+  }, 0);
+
+  el[HANDLER] = function(ev) {
+    // @NOTE: this test used to be just `el.containts`, but working with path is better,
+    //        because it tests whether the element was there at the time of
+    //        the click, not whether it is there now, that the event has arrived
+    //        to the top.
+    // @NOTE: `.path` is non-standard, the standard way is `.composedPath()`
+    var path = ev.path || (ev.composedPath ? ev.composedPath() : undefined);
+    if (initialMacrotaskEnded && (path ? path.indexOf(el) < 0 : !el.contains(ev.target))) {
+      return callback.call(vm, ev);
+    }
+  };
+
+  document.documentElement.addEventListener('click', el[HANDLER], false);
+}
+
+function unbind(el) {
+  document.documentElement.removeEventListener('click', el[HANDLER], false);
+  delete el[HANDLER];
+}
+
+var directive = {
+  bind: bind,
+  update: function(el, binding) {
+    if (binding.value === binding.oldValue) return;
+    bind(el, binding);
+  },
+  unbind: unbind,
+};
+
+var mixin = {
+  directives: { onClickaway: directive },
+};
+
+exports.version = version;
+exports.directive = directive;
+exports.mixin = mixin;
+
+/***/ }),
+
 /***/ "./resources/js/components/Dropdown.vue":
 /*!**********************************************!*\
   !*** ./resources/js/components/Dropdown.vue ***!
@@ -2310,54 +2447,99 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("div", { staticClass: "relative" }, [
-      _c("div", [
-        _c(
-          "button",
+    _c(
+      "div",
+      {
+        directives: [
           {
-            staticClass:
-              "text-gray-600 flex items-center hover:text-gray-900 transition"
+            name: "on-clickaway",
+            rawName: "v-on-clickaway",
+            value: _vm.hideMenu,
+            expression: "hideMenu"
+          }
+        ],
+        staticClass: "relative"
+      },
+      [
+        _c("div", [
+          _c(
+            "button",
+            {
+              staticClass:
+                "text-gray-600 flex items-center hover:text-gray-900 transition",
+              on: {
+                click: function($event) {
+                  _vm.showMenu = !_vm.showMenu
+                }
+              }
+            },
+            [
+              _c("div", [_vm._t("trigger")], 2),
+              _vm._v(" "),
+              _c("div", { staticClass: "ml-1" }, [
+                _c(
+                  "svg",
+                  {
+                    staticClass: "w-4 h-4",
+                    attrs: {
+                      fill: "none",
+                      stroke: "currentColor",
+                      viewBox: "0 0 24 24",
+                      xmlns: "http://www.w3.org/2000/svg"
+                    }
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        "stroke-linecap": "round",
+                        "stroke-linejoin": "round",
+                        "stroke-width": "2",
+                        d: "M19 9l-7 7-7-7"
+                      }
+                    })
+                  ]
+                )
+              ])
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c(
+          "transition",
+          {
+            attrs: {
+              "enter-active-class": "transition duration-200 transform",
+              "enter-class": "opacity-0 scale-95",
+              "enter-to-class": "opacity-1 scale-100",
+              "leave-active-class": "transition duration-200 transform",
+              "leave-class": "opacity-1 scale-100",
+              "leave-to-class": "opacity-0 scale-95"
+            }
           },
           [
-            _c("div", [_vm._v("Dropdown")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "ml-1" }, [
-              _c(
-                "svg",
-                {
-                  staticClass: "w-4 h-4",
-                  attrs: {
-                    fill: "none",
-                    stroke: "currentColor",
-                    viewBox: "0 0 24 24",
-                    xmlns: "http://www.w3.org/2000/svg"
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.showMenu,
+                    expression: "showMenu"
                   }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      "stroke-linecap": "round",
-                      "stroke-linejoin": "round",
-                      "stroke-width": "2",
-                      d: "M19 9l-7 7-7-7"
-                    }
-                  })
-                ]
-              )
-            ])
+                ],
+                staticClass:
+                  "absolute bg-white border border-gray-100 rounded-lg w-48 py-1 shadow-md mt-2 text-gray-600",
+                class: _vm.classes
+              },
+              [_vm._t("default")],
+              2
+            )
           ]
         )
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass:
-            "absolute bg-white border border-gray-100 rounded-lg right-0 w-48"
-        },
-        [_vm._v("\n            dass\n        ")]
-      )
-    ])
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = []

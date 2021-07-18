@@ -18,7 +18,15 @@
             {{-- Navbar Right Side --}}
             <div class="flex items-center">
                 {{-- Dropdown --}}
-                <dropdown />
+                <dropdown align="right">
+                    <template v-slot:trigger>
+                        Dropdown
+                    </template>
+
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">Profile</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">New Thread</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">Log out</a>
+                </dropdown>
             </div>
         </div>
     </div>
