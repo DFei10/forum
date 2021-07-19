@@ -16,17 +16,31 @@
             </div>
 
             {{-- Navbar Right Side --}}
-            <div class="flex items-center">
-                {{-- Dropdown --}}
-                <dropdown align="right">
-                    <template v-slot:trigger>
-                        Dropdown
-                    </template>
+            <div class="flex space-x-3">
+                @guest
+                    @if (Route::has('login'))
+                        <a href="{{ route('login') }}" class="inline-flex items-center text-gray-600 hover:text-gray-700">Login</a>
+                    @endif
 
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">Profile</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">New Thread</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">Log out</a>
-                </dropdown>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="inline-flex items-center text-gray-600  hover:text-gray-700">Register</a>
+                    @endif
+                @endguest
+
+                @auth
+                    <div class="flex items-center">
+                        {{-- Dropdown --}}
+                        <dropdown align="right">
+                            <template v-slot:trigger>
+                                Dropdown
+                            </template>
+
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">Profile</a>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">New Thread</a>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">Log out</a>
+                        </dropdown>
+                    </div>
+                @endauth
             </div>
         </div>
     </div>
