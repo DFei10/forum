@@ -10,8 +10,7 @@
 
                 {{-- Navbar Links --}}
                 <div class="ml-10 flex space-x-8">
-                    <a href="#" class="inline-flex items-center text-gray-600 border-b-2 border-transparent hover:border-gray-300">All Threads</a>
-                    <a href="#" class="inline-flex items-center text-gray-600 border-b-2 border-transparent hover:border-gray-300">New Threads</a>
+                    <x-nav-link href="/threads" :active="request()->path() == 'threads'">All Threads</x-nav-link>
                 </div>
             </div>
 
@@ -32,12 +31,23 @@
                         {{-- Dropdown --}}
                         <dropdown align="right">
                             <template v-slot:trigger>
-                                Dropdown
+                                <button class="text-gray-600 flex items-center hover:text-gray-900 transition">
+                                    <div>
+                                        {{ auth()->user()->name }}
+                                    </div>
+                                    <div class="ml-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </button>
                             </template>
 
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">Profile</a>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">New Thread</a>
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 ">Log out</a>
+                            <a href="/threads/create" class="block px-4 py-2 hover:bg-gray-100 text-sm">Create Thread</a>
+                            <a href="/profiles/{{ auth()->user()->name }}" class="block px-4 py-2 hover:bg-gray-100 text-sm">My Profile</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm" onclick="event.preventDefault(); this.closest('form').submit();" class="text-sm">Log out</a>
+                            </form>
                         </dropdown>
                     </div>
                 @endauth
