@@ -9,7 +9,10 @@ class FavoritesController extends Controller
     public function store(Reply $reply)
     {
         $reply->favorite();
+    }
 
-        return back();
+    public function destory(Reply $reply)
+    {
+        $reply->unfavorite();
     }
 }

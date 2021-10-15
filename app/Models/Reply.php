@@ -13,9 +13,9 @@ class Reply extends Model
     use Favourable;
     use RecordsActivity;
 
-    protected $fillable = ['owner_id', 'body'];
-
-    protected $with = ['owner', 'favorites'];
+    protected $fillable = ["owner_id", "body"];
+    protected $with = ["owner", "favorites"];
+    protected $appends  = ['favoritesCount', 'isFavorited'];
 
     public function owner()
     {
@@ -25,5 +25,10 @@ class Reply extends Model
     public function thread()
     {
         return $this->belongsTo(Thread::class);
+    }
+
+    public function path()
+    {
+        return $this->thread->path() . "#reply-" . $this->id;
     }
 }

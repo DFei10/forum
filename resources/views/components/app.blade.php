@@ -28,7 +28,7 @@
             {{ $slot }}
         </main>
 
-        <flash message="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
+
         <flash message="{{ session('flash') }}"/>
     </div>
 </body>

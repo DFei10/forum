@@ -17,23 +17,52 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get("/", function () {
+    return view("welcome");
 });
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get("/home", [
+    App\Http\Controllers\HomeController::class,
+    "index",
+])->name("home");
 
-Route::get('/threads', [ThreadsController::class, 'index'])->name('threads');
-Route::get('/threads/create', [ThreadsController::class, 'create'])->middleware('auth');
-Route::get('/threads/{channel:slug}', [ThreadsController::class, 'index']);
-Route::get('/threads/{channel:slug}/{thread}', [ThreadsController::class, 'show']);
-Route::delete('/threads/{channel:slug}/{thread}', [ThreadsController::class, 'destroy'])->middleware('auth');
+Route::get("/threads", [ThreadsController::class, "index"])->name("threads");
+Route::get("/threads/create", [ThreadsController::class, "create"])->middleware(
+    "auth"
+);
+Route::get("/threads/{channel:slug}", [ThreadsController::class, "index"]);
+Route::get("/threads/{channel:slug}/{thread}", [
+    ThreadsController::class,
+    "show",
+]);
+Route::delete("/threads/{channel:slug}/{thread}", [
+    ThreadsController::class,
+    "destroy",
+])->middleware("auth");
 
-Route::post('/threads', [ThreadsController::class, 'store'])->middleware('auth');
-Route::post('/threads/{channel:slug}/{thread}/replies', [RepliesController::class, 'store'])->middleware('auth');
-Route::post('/replies/{reply}/favorite', [FavoritesController::class, 'store'])->middleware('auth');
+Route::post("/threads", [ThreadsController::class, "store"])->middleware(
+    "auth"
+);
+Route::post("/threads/{channel:slug}/{thread}/replies", [
+    RepliesController::class,
+    "store",
+])->middleware("auth");
 
+Route::patch('/replies/{reply}', [RepliesController::class, 'patch'])->middleware('auth');
+Route::delete("/replies/{reply}", [
+    RepliesController::class,
+    "delete",
+])->middleware("auth");
 
-Route::get('/profiles/{user:name}', [ProfilesController::class, 'show']);
+Route::post("/replies/{reply}/favorite", [
+    FavoritesController::class,
+    "store",
+])->middleware("auth");
+Route::delete("/replies/{reply}/favorite", [
+    FavoritesController::class,
+    "destory",
+])->middleware("auth");
+
+Route::get("/profiles/{user:name}", [ProfilesController::class, "show"]);

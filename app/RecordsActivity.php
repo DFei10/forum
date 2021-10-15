@@ -9,7 +9,7 @@ trait RecordsActivity
     protected static function bootRecordsActivity()
     {
         if (auth()->check()) {
-            foreach (static::getActivitieToRecord() as $event) {
+            foreach (static::getActivitiyToRecord() as $event) {
                 static::$event(function ($model) use ($event) {
                     $model->recordActivity($event);
                 });
@@ -21,7 +21,7 @@ trait RecordsActivity
         }
     }
 
-    protected static function getActivitieToRecord()
+    protected static function getActivitiyToRecord()
     {
         return ['created'];
     }

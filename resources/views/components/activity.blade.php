@@ -3,6 +3,5 @@
         {{ $heading }}
     </div>
 
-    {{-- <h2 class="">{{ $activity->title }}</h2> --}}
     {{ $body }}
 </div>

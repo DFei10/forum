@@ -36,7 +36,7 @@
 	                <div class="p-6 bg-white rounded-lg mb-7 shadow flex">
 	                    <div class="mr-7">
 	                        <img
-	                            src="https://pbs.twimg.com/profile_images/914894066072113152/pWD-GUwG_400x400.jpg"
+	                            src="https://avatars.githubusercontent.com/u/463230?v=4"
 	                            alt="Author avatar"
 	                            class="w-10 rounded-full"
 	                        >
